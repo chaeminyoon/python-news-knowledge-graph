@@ -1,0 +1,133 @@
+.source-badge-container {
+    position: relative;
+    display: inline-block;
+}
+
+.source-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    margin: 0 0.25rem;
+    transition: all 0.2s;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+}
+
+.source-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.source-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 400px;
+    max-width: 90vw;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+    padding: 1.25rem;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.source-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 8px solid transparent;
+    border-top-color: white;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(4px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+.tooltip-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.tooltip-icon {
+    font-size: 1.5rem;
+}
+
+.tooltip-title-group {
+    flex: 1;
+}
+
+.tooltip-source {
+    display: block;
+    color: #667eea;
+    font-size: 0.95rem;
+    margin-bottom: 0.25rem;
+}
+
+.tooltip-category {
+    display: inline-block;
+    background: #f0f2f6;
+    padding: 0.2rem 0.6rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.tooltip-title {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+    line-height: 1.4;
+}
+
+.tooltip-summary {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.tooltip-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 0.75rem;
+    border-top: 1px solid #eee;
+}
+
+.tooltip-date {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.tooltip-link {
+    color: #667eea;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+}
+
+.tooltip-link:hover {
+    color: #764ba2;
+    text-decoration: underline;
+}
