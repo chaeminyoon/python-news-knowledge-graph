@@ -12,6 +12,43 @@ Neo4j 지식 그래프 기반 RAG 검색 시스템 (FastAPI 백엔드 + React �
 - **OpenAI GPT-4o** - LLM 추론
 - **자동 벡터 인덱스 생성**
 
+### 시스템 아키텍처
+
+```mermaid
+graph TD
+    subgraph "Frontend (React :3001)"
+        UI[User Interface]
+        SB[SearchBar]
+        RS[ResultSection]
+        UI --> SB
+        UI --> RS
+    end
+
+    subgraph "Backend (FastAPI :8000)"
+        API[API Server]
+        RAG[GraphRAG Manager]
+        LLM[OpenAI GPT-4o]
+        
+        API --> RAG
+        RAG --> LLM
+        
+        subgraph "Retrievers"
+            VR[Vector]
+            VCR[Vector+Cypher]
+            T2C[Text2Cypher]
+        end
+        
+        RAG --> VR & VCR & T2C
+    end
+
+    subgraph "Database (Neo4j)"
+        DB[(Graph DB)]
+    end
+
+    API <--> UI
+    VR & VCR & T2C <--> DB
+```
+
 ### 프론트엔드 (React + Vite)
 - **검색 UI** - 실시간 검색
 - **인라인 출처 배지** - 문장 끝에 [출처명] 표시

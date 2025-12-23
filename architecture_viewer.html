@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 뉴스 검색 시스템 아키텍처</title>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 20px;
+            background: #f4f6f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 40px;
+        }
+
+        .diagram-section {
+            margin-bottom: 60px;
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: #444;
+        }
+
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏗️ AI 뉴스 검색 시스템 구조도</h1>
+
+        <div class="diagram-section">
+            <h2>1. 전체 시스템 아키텍처 (System Architecture)</h2>
+            <div class="mermaid">
+                graph TD
+                subgraph "Client Side"
+                User((사용자))
+                Browser[웹 브라우저]
+                end
+
+                subgraph "Frontend (React + Vite :3001)"
+                UI[App.jsx]
+                Components[ResultSection / Tooltip]
+                end
+
+                subgraph "Backend (FastAPI :8000)"
+                API[API Server]
+                Manager[GraphRAG Manager]
+                Retriever[Tools Retriever]
+
+                subgraph "Search Strategies"
+                VR[Vector Search]
+                VCR[Vector + Cypher]
+                T2C[Text -> Cypher]
+                end
+                end
+
+                subgraph "External & Data"
+                LLM[OpenAI GPT-4o]
+                Neo4j[(Neo4j Graph DB)]
+                end
+
+                User -->|접속| Browser
+                Browser -->|렌더링| UI
+                UI -->|API 호출| API
+                API -->|요청 처리| Manager
+                Manager -->|전략 선택| Retriever
+                Retriever --> VR & VCR & T2C
+
+                VR & VCR & T2C -->|Query| Neo4j
+                Manager -->|Context + Prompt| LLM
+
+                style UI fill:#e1f5fe,stroke:#01579b
+                style API fill:#e8f5e9,stroke:#2e7d32
+                style Neo4j fill:#fff3e0,stroke:#ef6c00
+                style LLM fill:#f3e5f5,stroke:#7b1fa2
+            </div>
+        </div>
+
+        <div class="diagram-section">
+            <h2>2. 데이터 흐름도 (Data Flow Sequence)</h2>
+            <div class="mermaid">
+                sequenceDiagram
+                actor User
+                participant FE as React Frontend
+                participant BE as FastAPI Backend
+                participant RAG as GraphRAG
+                participant DB as Neo4j
+                participant AI as OpenAI GPT-4o
+
+                User->>FE: 1. 검색어 입력 ("경제 뉴스")
+                FE->>BE: 2. POST /search
+                BE->>RAG: 3. search() 호출
+
+                rect rgb(240, 248, 255)
+                note right of RAG: 하이브리드 검색 실행
+                par Parallel Retrieval
+                RAG->>DB: Vector Search
+                RAG->>DB: Graph Traversal
+                RAG->>DB: Text2Cypher
+                end
+                DB-->>RAG: 검색된 노드/관계 데이터
+                end
+
+                RAG->>AI: 4. Context + Prompt 전송
+                AI-->>RAG: 5. 요약 및 답변 생성 (JSON)
+                RAG-->>BE: 6. 최종 결과 반환
+                BE-->>FE: 7. JSON Response
+                FE-->>User: 8. 애니메이션과 함께 결과 표시
+            </div>
+        </div>
+
+        <div class="diagram-section">
+            <h2>3. Neo4j 그래프 데이터 모델 (Schema)</h2>
+            <div class="mermaid">
+                erDiagram
+                Article ||--o{ Content : HAS_CHUNK
+                Article ||--|| Category : BELONGS_TO
+                Article ||--|| Media : PUBLISHED
+
+                Article {
+                string title "기사 제목"
+                string url "링크"
+                datetime published_date "발행일"
+                }
+
+                Content {
+                string chunk "텍스트 조각"
+                vector embedding "임베딩 백터"
+                }
+
+                Category {
+                string name "분야 (경제, 정치 등)"
+                }
+
+                Media {
+                string name "언론사명"
+                }
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
